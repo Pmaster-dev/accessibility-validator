@@ -12,13 +12,13 @@
 
 The Developer-Magician is a core service within PinkSync that ensures all interfaces prioritize ASL flow and bypass audio-only UX. This service validates websites and applications for Deaf-first accessibility, going beyond standard WCAG compliance to focus on visual UI and sign language navigation patterns.
 
-## 🎯 Purpose in MBTQ Ecosystem
+## 🎯 Purpose in AI Ecosystem
 
 - **PinkSync Role**: Acts as the “nervous system” executor for accessibility validation
 - **DeafAUTH Integration**: Validates identity flows work for Deaf users
 - **Fibonrose Logging**: Reports accessibility scores to trust/reputation system
 - **360Magicians Compatible**: AI agents can trigger validation tasks
-- **DAO Governed**: Validation standards controlled by mbtquniverse.com governance
+- **DAO Governed**: Validation standards controlled by open source governance
 
 ## 🚀 Quick Deploy
 
