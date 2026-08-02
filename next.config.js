@@ -10,31 +10,9 @@ const nextConfig = {
   images: {
     unoptimized: true, // Required for static export
   },
-  rewrites: async () => {
-    return [
-      {
-        source: "/api/py/:path*",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api/py/:path*"
-            : "/api/",
-      },
-      {
-        source: "/docs",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api/py/docs"
-            : "/api/py/docs",
-      },
-      {
-        source: "/openapi.json",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api/py/openapi.json"
-            : "/api/py/openapi.json",
-      },
-    ];
-  },
+  // Note: rewrites() is not supported with output: 'export'.
+  // The FastAPI backend (api/index.py) is accessed directly at http://127.0.0.1:8000
+  // in development. See README.md for local dev setup instructions.
 };
 
 module.exports = nextConfig;

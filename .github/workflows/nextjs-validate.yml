@@ -1,3 +1,73 @@
-❌ PR rejected if next/server or next/headers imported
-❌ PR rejected if any route handler found in app/api/
-❌ PR rejected if process.env used without NEXT_PUBLIC_ prefix
+name: ✅ Next.js Static Export Validation
+
+on:
+  push:
+    branches: [main, develop, copilot/**]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-static-export:
+    name: 🔍 Validate Static Export Compatibility
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Check for next/server or next/headers imports
+        run: |
+          echo "🔍 Checking for server-only imports incompatible with static export..."
+          if grep -r "from ['\"]next/server['\"]" app/ --include="*.ts" --include="*.tsx" 2>/dev/null; then
+            echo "❌ Found next/server import — incompatible with output: 'export'"
+            exit 1
+          fi
+          if grep -r "from ['\"]next/headers['\"]" app/ --include="*.ts" --include="*.tsx" 2>/dev/null; then
+            echo "❌ Found next/headers import — incompatible with output: 'export'"
+            exit 1
+          fi
+          echo "✅ No forbidden server imports found"
+
+      - name: Check for route handlers in app/api/
+        run: |
+          echo "🔍 Checking for route handlers incompatible with static export..."
+          if find app/api/ -name "route.ts" -o -name "route.tsx" 2>/dev/null | grep -q .; then
+            echo "❌ Found route handlers in app/api/ — incompatible with output: 'export'"
+            exit 1
+          fi
+          echo "✅ No route handlers found"
+
+      - name: Check for non-public process.env usage in client components
+        run: |
+          echo "🔍 Checking for process.env without NEXT_PUBLIC_ prefix in client components..."
+          # Find files with 'use client' that use process.env without NEXT_PUBLIC_
+          FOUND=0
+          while IFS= read -r -d '' file; do
+            if grep -q "'use client'" "$file" || grep -q '"use client"' "$file"; then
+              if grep -qP "process\.env\.(?!NEXT_PUBLIC_)" "$file" 2>/dev/null; then
+                echo "❌ Non-public process.env in client component: $file"
+                FOUND=1
+              fi
+            fi
+          done < <(find app/ -name "*.ts" -o -name "*.tsx" -print0 2>/dev/null)
+          if [ "$FOUND" = "1" ]; then exit 1; fi
+          echo "✅ No non-public process.env found in client components"
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        run: npm run lint

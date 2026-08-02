@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from "next/link";
 
 interface ApiResponse {
   [key: string]: unknown;
@@ -56,21 +55,25 @@ export default function Home() {
 
         {/* Quick Links */}
         <div className="grid md:grid-cols-2 gap-4 mb-12">
-          <Link 
-            href="/api/py/docs"
+          <a 
+            href="http://127.0.0.1:8000/api/py/docs"
+            target="_blank"
+            rel="noopener noreferrer"
             className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-purple-500"
           >
             <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">🔮 Magician API</h3>
             <p className="text-gray-600 dark:text-gray-400">Explore the AI agent capabilities and endpoints</p>
-          </Link>
+          </a>
           
-          <Link 
-            href="/api/helloNextJs"
+          <a 
+            href="https://github.com/Pmaster-dev/accessibility-validator"
+            target="_blank"
+            rel="noopener noreferrer"
             className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-blue-500"
           >
-            <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">⚡ Integration Demo</h3>
-            <p className="text-gray-600 dark:text-gray-400">See how Developer Magician integrates with your stack</p>
-          </Link>
+            <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">⚡ Source Code</h3>
+            <p className="text-gray-600 dark:text-gray-400">View the accessibility validator repository on GitHub</p>
+          </a>
         </div>
 
         {/* Interactive Demo Section */}
@@ -149,12 +152,14 @@ export default function Home() {
                     ))}
                   </div>
                   
-                  <Link 
-                    href="/api/py/docs"
+                  <a 
+                    href="http://127.0.0.1:8000/api/py/docs"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                   >
                     Explore All Magician Capabilities →
-                  </Link>
+                  </a>
                 </div>
               )}
             </div>

@@ -1,0 +1,74 @@
+name: 🔧 Auto-fix Code Issues
+
+on:
+  push:
+    branches: [main, develop, copilot/**]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-fix:
+    name: 🛠️ Auto-fix ESLint Issues
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Use a token that allows pushing back to the branch
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run ESLint auto-fix
+        run: |
+          echo "🔧 Running ESLint with --fix..."
+          npx eslint . --fix --ext .ts,.tsx --ignore-path .gitignore || true
+          echo "✅ ESLint auto-fix complete"
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "✅ No changes needed — code is already clean!"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "📝 Auto-fix made the following changes:"
+            git diff --stat
+          fi
+
+      - name: Commit auto-fixes
+        if: steps.changes.outputs.changed == 'true' && github.event_name == 'push'
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: auto-fix ESLint issues [skip ci]"
+          git push
+
+      - name: Summary
+        run: |
+          echo "════════════════════════════════════════════════════════════"
+          echo "🔧 AUTO-FIX SUMMARY"
+          echo "════════════════════════════════════════════════════════════"
+          if [ "${{ steps.changes.outputs.changed }}" = "true" ]; then
+            echo "✅ Auto-fixed ESLint issues and committed changes"
+          else
+            echo "✅ No issues found — code is clean!"
+          fi
+          echo "════════════════════════════════════════════════════════════"
