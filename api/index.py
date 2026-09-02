@@ -462,7 +462,7 @@ async def learn_workflow_stage(stage: WorkflowStage) -> Dict[str, Any]:
             "title": "Deployment",
             "what_it_does": "Publishes your application to production servers",
             "why_important": "Makes your code available to users",
-            "platforms": [options]
+            "platforms": ["Vercel", "AWS", "GitHub Pages"],
             "common_issues": [
                 "Missing environment variables",
                 "Build timeouts",
