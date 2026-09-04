@@ -24,4 +24,7 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  /* Optimization: optimizeSpeed skips complex kerning/ligatures to reduce CPU layout render time */
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
 }
